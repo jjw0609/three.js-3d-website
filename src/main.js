@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 
 // Renderer
 const canvas = document.querySelector('#three-canvas');
@@ -27,6 +28,9 @@ camera.position.z = 7;
 // camera.position.set(-1, 3, 7);
 scene.add(camera);
 
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+
 // Light
 const ambientLight = new THREE.AmbientLight('white', 1);
 scene.add(ambientLight);
@@ -40,7 +44,10 @@ scene.add(directionalLight);
 const boxMesh = new THREE.Mesh(
     new THREE.BoxGeometry(2, 2, 2), // geometry
     // new THREE.MeshBasicMaterial({color: 'firebrick'}) // material
-    new THREE.MeshLambertMaterial({color: 'firebrick'}) // material
+    new THREE.MeshLambertMaterial({
+        color: 'firebrick',
+        side: THREE.DoubleSide
+    }) // material
 );
 boxMesh.position.y = 1;
 boxMesh.castShadow = true;
@@ -49,7 +56,10 @@ scene.add(boxMesh);
 const groundMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(10, 10), // geometry
     // new THREE.MeshBasicMaterial({color: '#092e66'}) // material
-    new THREE.MeshLambertMaterial({color: '#092e66'}) // material
+    new THREE.MeshLambertMaterial({
+        color: '#092e66',
+        side: THREE.DoubleSide
+    }) // material
 );
 groundMesh.rotation.x = THREE.MathUtils.degToRad(-90);
 // groundMesh.rotation.x = -Math.PI / 2;
@@ -60,4 +70,13 @@ scene.add(boxMesh, groundMesh);
 camera.lookAt(boxMesh.position);
 
 // Draw
-renderer.render(scene, camera);
+let boxMeshY = 1;
+function draw() {
+    renderer.render(scene, camera);
+    controls.update();
+
+    // window.requestAnimationFrame(draw);
+    renderer.setAnimationLoop(draw);
+}
+
+draw();
