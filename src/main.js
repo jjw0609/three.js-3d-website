@@ -70,8 +70,17 @@ scene.add(boxMesh, groundMesh);
 camera.lookAt(boxMesh.position);
 
 // Draw
-let boxMeshY = 1;
+const clock = new THREE.Clock();
 function draw() {
+
+    const delta = clock.getDelta();
+
+    boxMesh.position.y += delta * 3;
+
+    if(boxMesh.position.y > 5) {
+        boxMesh.position.y = 0;
+    }
+
     renderer.render(scene, camera);
     controls.update();
 
