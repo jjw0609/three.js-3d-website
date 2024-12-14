@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import { MeshObject } from './MeshObject.js';
 
 // Renderer
 const canvas = document.querySelector('#three-canvas');
@@ -39,24 +40,24 @@ pointLight.position.y = 10;
 scene.add(ambientLight, pointLight);
 
 // Mesh
-const groundMesh = new THREE.Mesh(
-    new THREE.BoxGeometry(50, 0.1, 50),
-    new THREE.MeshLambertMaterial({
-        color: '#092e66',
-        side: THREE.DoubleSide
-    })
-);
-groundMesh.receiveShadow = true;
-groundMesh.position.y = -0.05;
-scene.add(groundMesh);
+const ground = new MeshObject({
+    scene,
+    name: 'ground',
+    width: 50,
+    height: 0.1,
+    depth: 50,
+    color: '#092e66',
+    y: -0.05
+});
 
-const floorMesh = new THREE.Mesh(
-    new THREE.BoxGeometry(5, 0.4, 5),
-    new THREE.MeshLambertMaterial()
-);
-floorMesh.castShadow = true;
-floorMesh.position.y = 0.2;
-scene.add(floorMesh);
+
+const floorMesh = new MeshObject({
+    scene,
+    name: 'floor',
+    width: 5,
+    height: 0.4,
+    depth: 5
+});
 
 // Draw
 const clock = new THREE.Clock();
