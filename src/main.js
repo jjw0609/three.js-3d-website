@@ -51,13 +51,32 @@ const ground = new MeshObject({
 });
 
 
-const floorMesh = new MeshObject({
+const floor = new MeshObject({
     scene,
     name: 'floor',
     width: 5,
     height: 0.4,
     depth: 5
 });
+
+const wall1 = new MeshObject({
+    scene,
+    name: 'wall1',
+    width: 5,
+    height: 3,
+    depth: 0.2,
+    z: -2.4
+});
+
+const wall2 = new MeshObject({
+    scene,
+    name: 'wall2',
+    width: 0.2,
+    height: 3,
+    depth: 4.8,
+    x: 2.4,
+    z: 0.1
+})
 
 // Draw
 const clock = new THREE.Clock();
