@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject } from './MeshObject.js';
 
 // Renderer
@@ -31,6 +32,23 @@ scene.add(camera);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
+
+const loader = new GLTFLoader();
+loader.load(
+  './models/desk.glb',
+  glb => {
+      console.log('loaded');
+      console.log(glb);
+      scene.add(glb.scene);
+      glb.scene.position.y = 0.8;
+  },
+  xhr => {
+      console.log('loading ... ');
+  },
+    error => {
+      console.log('error');
+    }
+);
 
 // Light
 const ambientLight = new THREE.AmbientLight('white', 1);
