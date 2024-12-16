@@ -34,21 +34,7 @@ scene.add(camera);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 const loader = new GLTFLoader();
-loader.load(
-  './models/desk.glb',
-  glb => {
-      console.log('loaded');
-      console.log(glb);
-      scene.add(glb.scene);
-      glb.scene.position.y = 0.8;
-  },
-  xhr => {
-      console.log('loading ... ');
-  },
-    error => {
-      console.log('error');
-    }
-);
+
 
 // Light
 const ambientLight = new THREE.AmbientLight('white', 1);
@@ -65,7 +51,8 @@ const ground = new MeshObject({
     height: 0.1,
     depth: 50,
     color: '#092e66',
-    y: -0.05
+    y: -0.05,
+    differenceY: '0'
 });
 
 
@@ -74,7 +61,8 @@ const floor = new MeshObject({
     name: 'floor',
     width: 5,
     height: 0.4,
-    depth: 5
+    depth: 5,
+    differenceY: '0'
 });
 
 const wall1 = new MeshObject({
@@ -94,7 +82,19 @@ const wall2 = new MeshObject({
     depth: 4.8,
     x: 2.4,
     z: 0.1
-})
+});
+
+const desk = new MeshObject({
+    scene,
+    loader,
+    name: 'desk',
+    width: 1.8,
+    height: 0.8,
+    depth: 0.75,
+    x: 1.2,
+    z: -1.9,
+    modelSrc: './models/desk.glb'
+});
 
 // Draw
 const clock = new THREE.Clock();
