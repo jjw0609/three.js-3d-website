@@ -12,6 +12,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // Scene
 const scene = new THREE.Scene();
@@ -40,6 +41,8 @@ const loader = new GLTFLoader();
 const ambientLight = new THREE.AmbientLight('white', 1);
 const pointLight = new THREE.PointLight('white', 100, 100);
 pointLight.castShadow = true;
+pointLight.shadow.mapSize.width = 2048;
+pointLight.shadow.mapSize.height = 2048;
 pointLight.position.y = 10;
 scene.add(ambientLight, pointLight);
 
