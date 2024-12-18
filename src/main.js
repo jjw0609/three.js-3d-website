@@ -96,6 +96,28 @@ const desk = new MeshObject({
     modelSrc: './models/desk.glb'
 });
 
+const lamp = new MeshObject({
+    scene,
+    loader,
+    name: 'lamp',
+    width: 0.5,
+    height: 1.8,
+    depth: 0.5,
+    z: -1.7,
+    modelSrc: './models/lamp.glb'
+});
+
+const roboticVaccum = new MeshObject({
+    scene,
+    loader,
+    name: 'roboticVaccum',
+    width: 0.5,
+    height: 0.1,
+    depth: 0.5,
+    x: -1,
+    modelSrc: './models/vaccum.glb'
+});
+
 // Draw
 const clock = new THREE.Clock();
 function draw() {
