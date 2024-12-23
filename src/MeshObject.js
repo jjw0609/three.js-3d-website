@@ -12,6 +12,9 @@ export class MeshObject {
         this.x = info.x || 0;
         this.y = info.y || this.height / 2 + this.differenceY;
         this.z = info.z || 0;
+        this.rotationX = info.rotationX || 0;
+        this.rotationY = info.rotationY || 0;
+        this.rotationZ = info.rotationZ || 0;
 
         if(info.modelSrc) {
             // GLB
@@ -25,8 +28,10 @@ export class MeshObject {
                     })
 
                     // console.log('loaded');
-                    info.scene.add(glb.scene);
-                    glb.scene.position.set(this.x, this.y, this.z);
+                    this.mesh = glb.scene;
+                    info.scene.add(this.mesh);
+                    this.mesh.position.set(this.x, this.y, this.z);
+                    this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
                 },
                 xhr => {
                     // console.log('loading ... ');
@@ -34,6 +39,25 @@ export class MeshObject {
                 error => {
                     // console.log('error');
                 }
+            );
+
+        } else if (info.mapSrc) {
+            const geometry = new BoxGeometry(this.width, this.height, this.depth);
+            info.loader.load(
+              info.mapSrc,
+              texture => {
+                  const material = new MeshLambertMaterial({
+                     map: texture
+                  });
+
+                  this.mesh = new Mesh(geometry, material);
+                  this.mesh.castShadow = true;
+                  this.mesh.receiveShadow = true;
+                  this.mesh.position.set(this.x, this.y, this.z);
+                  this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
+
+                  info.scene.add(this.mesh);
+              }
             );
 
         } else {
@@ -47,6 +71,7 @@ export class MeshObject {
             this.mesh.castShadow = true;
             this.mesh.receiveShadow = true;
             this.mesh.position.set(this.x, this.y, this.z);
+            this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
 
             info.scene.add(this.mesh);
         }
