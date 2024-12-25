@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+// import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject } from './MeshObject.js';
 
@@ -32,7 +32,7 @@ camera.position.z = 7;
 scene.add(camera);
 
 // Controls
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
 
@@ -152,3 +152,15 @@ function setLayout() {
 
 // Events
 window.addEventListener('resize', setLayout);
+
+document.addEventListener('click', () => {
+    canvas.requestPointerLock();
+});
+
+document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement === canvas) {
+        document.body.dataset.mode = 'game';
+    } else {
+        document.body.dataset.mode = 'website';
+    }
+})
