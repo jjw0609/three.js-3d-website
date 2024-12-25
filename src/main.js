@@ -135,20 +135,63 @@ const magazine = new MeshObject({
     mapSrc: './models/magazine.jpg'
 })
 
-// Draw
-const clock = new THREE.Clock();
-function draw() {
-    renderer.render(scene, camera);
-    renderer.setAnimationLoop(draw);
-}
-
-draw();
-
 function setLayout() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+let movementX = 0;
+let movementY = 0;
+function updateMovementValue(event) {
+    movementX = event.movementX * delta;
+    movementY = event.movementY * delta;
+    // console.log('x: ' + event.movementX);
+    // console.log('y: ' + event.movementY);
+}
+
+const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+const minPolarAngle = 0;
+const maxPolarAngle = Math.PI;  // 100
+function rotateCamera() {
+    euler.setFromQuaternion(camera.quaternion);
+    euler.y -= movementX;
+    euler.x -= movementY;
+    euler.x = Math.max(Math.PI/2 - maxPolarAngle, Math.min(Math.PI/2 - minPolarAngle, euler.x));
+
+    movementX -= movementX * 0.2;
+    movementY -= movementY * 0.2;
+
+    if(Math.abs(movementX) < 0.1) movementX = 0;
+    if(Math.abs(movementY) < 0.1) movementY = 0;
+
+    camera.quaternion.setFromEuler(euler);
+}
+
+function setMode(mode) {
+    document.body.dataset.mode = mode;
+
+    if(mode === 'game') {
+        document.addEventListener('mousemove', updateMovementValue);
+
+    } else if(mode === 'website') {
+        document.removeEventListener('mousemove', updateMovementValue);
+    }
+}
+
+// Draw
+const clock = new THREE.Clock();
+let delta;
+function draw() {
+
+    delta = clock.getDelta();
+
+    rotateCamera();
+    renderer.render(scene, camera);
+    renderer.setAnimationLoop(draw);
+}
+
+draw();
 
 // Events
 window.addEventListener('resize', setLayout);
@@ -159,8 +202,8 @@ document.addEventListener('click', () => {
 
 document.addEventListener('pointerlockchange', () => {
     if (document.pointerLockElement === canvas) {
-        document.body.dataset.mode = 'game';
+        setMode('game');
     } else {
-        document.body.dataset.mode = 'website';
+        setMode('website');
     }
 })
