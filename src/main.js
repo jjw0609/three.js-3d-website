@@ -2,6 +2,7 @@ import * as THREE from 'three';
 // import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject } from './MeshObject.js';
+import * as CANNON from 'cannon-es';
 
 // Renderer
 const canvas = document.querySelector('#three-canvas');
@@ -45,6 +46,21 @@ pointLight.shadow.mapSize.width = 2048;
 pointLight.shadow.mapSize.height = 2048;
 pointLight.position.y = 10;
 scene.add(ambientLight, pointLight);
+
+// Cannon(Physics)
+const cannonWorld = new CANNON.World();
+cannonWorld.gravity.set(0, -10, 0);
+
+const defaultCannonMaterial = new CANNON.Material('defulat');
+const defaultContactMaterial = new CANNON.ContactMaterial(
+    defaultCannonMaterial,
+    defaultCannonMaterial,
+    {
+        friction: 1,
+        restituion: 0.2
+    }
+);
+cannonWorld.defaultContactMaterial = defaultContactMaterial;
 
 // Mesh
 const ground = new MeshObject({
