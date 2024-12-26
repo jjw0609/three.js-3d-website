@@ -1,4 +1,5 @@
 import { Mesh, BoxGeometry, MeshLambertMaterial } from 'three';
+import { Vec3, Box, Body, Quaternion } from 'cannon-es';
 
 
 export class MeshObject {
@@ -16,6 +17,10 @@ export class MeshObject {
         this.rotationY = info.rotationY || 0;
         this.rotationZ = info.rotationZ || 0;
 
+        this.mass = info.mass || 0;
+        this.cannonWorld = info.cannonWorld;
+        this.cannonMaterial = info.cannonMaterial
+
         if(info.modelSrc) {
             // GLB
             info.loader.load(
@@ -32,6 +37,8 @@ export class MeshObject {
                     info.scene.add(this.mesh);
                     this.mesh.position.set(this.x, this.y, this.z);
                     this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
+
+                    this.setCannonBody();
                 },
                 xhr => {
                     // console.log('loading ... ');
@@ -57,6 +64,8 @@ export class MeshObject {
                   this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
 
                   info.scene.add(this.mesh);
+
+                  this.setCannonBody();
               }
             );
 
@@ -74,6 +83,19 @@ export class MeshObject {
             this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
 
             info.scene.add(this.mesh);
+
+            this.setCannonBody();
         }
+    }
+
+    setCannonBody() {
+        this.cannonBody = new Body({
+            mass: this.mass,
+            position: new Vec3(this.x, this.y, this.z),
+            shape: new Box(new Vec3(this.width/2, this.height/2, this.depth/2)),
+            material: this.cannonMaterial
+        });
+
+        this.cannonWorld.addBody(this.cannonBody);
     }
 }

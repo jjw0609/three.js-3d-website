@@ -62,9 +62,13 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 );
 cannonWorld.defaultContactMaterial = defaultContactMaterial;
 
+const cannonObjects = [];
+
 // Mesh
 const ground = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     name: 'ground',
     width: 50,
     height: 0.1,
@@ -77,6 +81,8 @@ const ground = new MeshObject({
 
 const floor = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     name: 'floor',
     width: 5,
     height: 0.4,
@@ -86,6 +92,8 @@ const floor = new MeshObject({
 
 const wall1 = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     name: 'wall1',
     width: 5,
     height: 3,
@@ -95,6 +103,8 @@ const wall1 = new MeshObject({
 
 const wall2 = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     name: 'wall2',
     width: 0.2,
     height: 3,
@@ -105,6 +115,8 @@ const wall2 = new MeshObject({
 
 const desk = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     loader: gltfLoader,
     name: 'desk',
     width: 1.8,
@@ -117,6 +129,8 @@ const desk = new MeshObject({
 
 const lamp = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     loader: gltfLoader,
     name: 'lamp',
     width: 0.5,
@@ -128,6 +142,8 @@ const lamp = new MeshObject({
 
 const roboticVaccum = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     loader: gltfLoader,
     name: 'roboticVaccum',
     width: 0.5,
@@ -139,6 +155,8 @@ const roboticVaccum = new MeshObject({
 
 const magazine = new MeshObject({
     scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial,
     loader: textureLoader,
     name: 'magazie',
     width: 0.2,
@@ -150,6 +168,8 @@ const magazine = new MeshObject({
     rotationX: THREE.MathUtils.degToRad(52),
     mapSrc: './models/magazine.jpg'
 })
+
+cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
 
 function setLayout() {
     camera.aspect = window.innerWidth / window.innerHeight;
