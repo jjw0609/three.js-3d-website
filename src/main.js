@@ -117,6 +117,7 @@ const desk = new MeshObject({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
+    mass: 20,
     loader: gltfLoader,
     name: 'desk',
     width: 1.8,
@@ -131,11 +132,12 @@ const lamp = new MeshObject({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
+    mass: 10,
     loader: gltfLoader,
     name: 'lamp',
     width: 0.5,
     height: 1.8,
-    depth: 0.5,
+    depth: 0|.5,
     z: -1.7,
     modelSrc: './models/lamp.glb'
 });
@@ -144,6 +146,7 @@ const roboticVaccum = new MeshObject({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
+    mass: 10,
     loader: gltfLoader,
     name: 'roboticVaccum',
     width: 0.5,
@@ -157,6 +160,7 @@ const magazine = new MeshObject({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
+    mass: 0.5,
     loader: textureLoader,
     name: 'magazie',
     width: 0.2,
@@ -221,6 +225,17 @@ let delta;
 function draw() {
 
     delta = clock.getDelta();
+
+    let cannonStepTime = 1/60;
+    if(delta < 0.01) cannonStepTime = 1/120;
+    cannonWorld.step(cannonStepTime, delta, 3);
+
+    for(const object of cannonObjects) {
+        if(object.cannonBody) {
+            object.mesh.position.copy(object.cannonBody.position);
+            object.mesh.quaternion.copy(object.cannonBody.quaternion);
+        }
+    }
 
     rotateCamera();
     renderer.render(scene, camera);

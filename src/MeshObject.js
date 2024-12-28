@@ -13,6 +13,9 @@ export class MeshObject {
         this.x = info.x || 0;
         this.y = info.y || this.height / 2 + this.differenceY;
         this.z = info.z || 0;
+        this.x *= 1;
+        this.y *= 1;
+        this.z *= 1;
         this.rotationX = info.rotationX || 0;
         this.rotationY = info.rotationY || 0;
         this.rotationZ = info.rotationZ || 0;
