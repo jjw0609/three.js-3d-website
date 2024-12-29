@@ -99,6 +99,29 @@ export class MeshObject {
             material: this.cannonMaterial
         });
 
+        // this.cannonBody.quaternion.setFromAxisAngle(
+        //     new Vec3(0, 1, 0),    // y
+        //     this.rotationY
+        // );
+
+        // rotation: x
+        const quatX = new Quaternion();
+        const axisX = new Vec3(1, 0, 0);
+        quatX.setFromAxisAngle(axisX, this.rotationX);
+
+        // rotation: y
+        const quatY = new Quaternion();
+        const axisY = new Vec3(0, 1, 0);
+        quatY.setFromAxisAngle(axisY, this.rotationY);
+
+        // rotation: z
+        const quatZ = new Quaternion();
+        const axisZ = new Vec3(0, 0, 1);
+        quatZ.setFromAxisAngle(axisZ, this.rotationZ);
+
+        const combineQuat = quatX.mult(quatY).mult(quatZ);
+        this.cannonBody.quaternion = combineQuat;
+
         this.cannonWorld.addBody(this.cannonBody);
     }
 }
