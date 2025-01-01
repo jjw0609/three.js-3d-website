@@ -2,6 +2,8 @@ import * as THREE from 'three';
 // import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject } from './MeshObject.js';
+import { KeyController } from './KeyController.js';
+import { Player } from './Player.js';
 import * as CANNON from 'cannon-es';
 
 // Renderer
@@ -36,6 +38,7 @@ scene.add(camera);
 // const controls = new OrbitControls(camera, renderer.domElement);
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
+const keyController = new KeyController();
 
 
 // Light
@@ -173,12 +176,40 @@ const magazine = new MeshObject({
     mapSrc: './models/magazine.jpg'
 })
 
+const player = new Player({
+    scene,
+    cannonWorld,
+    cannonMaterial: defaultCannonMaterial
+});
+
 cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
 
 function setLayout() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function move() {
+    if(keyController.keys['KeyW'] || keyController.keys['ArrowUp']) {
+        // forward
+        player.walk(-3, 'forward');
+    }
+
+    if(keyController.keys['KeyS'] || keyController.keys['ArrowDown']) {
+        // backward
+        player.walk(3, 'backward');
+    }
+
+    if(keyController.keys['KeyA'] || keyController.keys['ArrowLeft']) {
+        // left
+        player.walk(3, 'left');
+    }
+
+    if(keyController.keys['KeyD'] || keyController.keys['ArrowRight']) {
+        // right
+        player.walk(3, 'right');
+    }
 }
 
 let movementX = 0;
@@ -193,7 +224,8 @@ function updateMovementValue(event) {
 const euler = new THREE.Euler(0, 0, 0, 'YXZ');
 const minPolarAngle = 0;
 const maxPolarAngle = Math.PI;  // 100
-function rotateCamera() {
+function moveCamera() {
+    // rotation
     euler.setFromQuaternion(camera.quaternion);
     euler.y -= movementX;
     euler.x -= movementY;
@@ -206,6 +238,11 @@ function rotateCamera() {
     if(Math.abs(movementY) < 0.1) movementY = 0;
 
     camera.quaternion.setFromEuler(euler);
+
+    // position
+    camera.position.x = player.x;
+    camera.position.y = player.y + 1;
+    camera.position.z = player.z;
 }
 
 function setMode(mode) {
@@ -237,7 +274,11 @@ function draw() {
         }
     }
 
-    rotateCamera();
+    if(player.cannonBody) {
+        move();
+    }
+
+    moveCamera();
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
 }

@@ -27,7 +27,8 @@ export class Player {
         // Primitives
         const geometry = new BoxGeometry(this.width, this.height, this.depth);
         const material = new MeshBasicMaterial({
-            color: this.color
+            transparent: true,
+            opacity: 0
         });
 
         this.mesh = new Mesh(geometry, material);
@@ -37,6 +38,10 @@ export class Player {
         info.scene.add(this.mesh);
 
         this.setCannonBody();
+    }
+
+    walk(value, direction) {
+
     }
 
     setCannonBody() {
