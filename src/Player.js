@@ -1,4 +1,4 @@
-import { Mesh, BoxGeometry, MeshBasicMaterial } from 'three';
+import { Mesh, BoxGeometry, MeshBasicMaterial, MathUtils } from 'three';
 import { Vec3, Box, Body, Quaternion } from 'cannon-es';
 
 
@@ -42,6 +42,24 @@ export class Player {
 
     walk(value, direction) {
 
+        if(direction === 'left') {
+            this.rotationY -= MathUtils.degToRad(90);
+        }
+
+        if(direction === 'right') {
+            this.rotationY += MathUtils.degToRad(90);
+        }
+
+
+        this.x += Math.sin(this.rotationY) * value;
+        this.z += Math.cos(this.rotationY) * value;
+
+        if(this.cannonBody) {
+            this.cannonBody.position.x = this.x;
+            this.cannonBody.position.z = this.z;
+            this.mesh.position.x = this.x;
+            this.mesh.position.z = this.z;
+        }
     }
 
     setCannonBody() {
