@@ -55,6 +55,7 @@ const cannonWorld = new CANNON.World();
 cannonWorld.gravity.set(0, -10, 0);
 
 const defaultCannonMaterial = new CANNON.Material('defulat');
+const playerCannonMaterial = new CANNON.Material('player');
 const defaultContactMaterial = new CANNON.ContactMaterial(
     defaultCannonMaterial,
     defaultCannonMaterial,
@@ -63,6 +64,15 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
         restituion: 0.2
     }
 );
+const playerContactMaterial = new CANNON.ContactMaterial(
+    playerCannonMaterial,
+    defaultCannonMaterial,
+    {
+        friction: 100,
+        restituion: 0
+    }
+);
+cannonWorld.addContactMaterial(playerContactMaterial);
 cannonWorld.defaultContactMaterial = defaultContactMaterial;
 
 const cannonObjects = [];
@@ -179,7 +189,9 @@ const magazine = new MeshObject({
 const player = new Player({
     scene,
     cannonWorld,
-    cannonMaterial: defaultCannonMaterial
+    cannonMaterial: playerCannonMaterial,
+    mass: 50,
+    z: 1.5
 });
 
 cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
@@ -276,6 +288,10 @@ function draw() {
     }
 
     if(player.cannonBody) {
+        player.mesh.position.copy(player.cannonBody.position);
+        player.x = player.cannonBody.position.x;
+        player.y = player.cannonBody.position.y;
+        player.z = player.cannonBody.position.z;
         move();
     }
 
