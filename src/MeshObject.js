@@ -20,6 +20,8 @@ export class MeshObject {
         this.rotationY = info.rotationY || 0;
         this.rotationZ = info.rotationZ || 0;
 
+        this.cannonShape = info.cannonShape || new Box(new Vec3(this.width/2, this.height/2, this.depth/2));
+
         this.mass = info.mass || 0;
         this.cannonWorld = info.cannonWorld;
         this.cannonMaterial = info.cannonMaterial
@@ -95,7 +97,7 @@ export class MeshObject {
         this.cannonBody = new Body({
             mass: this.mass,
             position: new Vec3(this.x, this.y, this.z),
-            shape: new Box(new Vec3(this.width/2, this.height/2, this.depth/2)),
+            shape: this.cannonShape,
             material: this.cannonMaterial
         });
 
