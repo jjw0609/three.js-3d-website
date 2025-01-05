@@ -1,4 +1,4 @@
-import { Mesh, BoxGeometry, MeshLambertMaterial } from 'three';
+import { Mesh, BoxGeometry, MeshBasicMaterial, MeshLambertMaterial } from 'three';
 import { Vec3, Box, Body, Quaternion } from 'cannon-es';
 
 
@@ -39,9 +39,24 @@ export class MeshObject {
 
                     // console.log('loaded');
                     this.mesh = glb.scene;
-                    info.scene.add(this.mesh);
+                    this.mesh.name = this.name;
                     this.mesh.position.set(this.x, this.y, this.z);
                     this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
+                    info.scene.add(this.mesh);
+
+                    // Transparent Mesh for Raycasting
+                    const geometry = info.geometry || new BoxGeometry(this.width, this.height, this.depth);
+                    this.transparentMesh = new Mesh(
+                      geometry,
+                      new MeshBasicMaterial({
+                          color: 'green',
+                          transparent: true,
+                          opacity: 0
+                      })
+                    );
+                    this.transparentMesh.name = this.name;
+                    this.transparentMesh.position.set(this.x, this.y, this.z);
+                    info.scene.add(this.transparentMesh);
 
                     this.setCannonBody();
                 },
@@ -63,6 +78,7 @@ export class MeshObject {
                   });
 
                   this.mesh = new Mesh(geometry, material);
+                  this.mesh.name = this.name;
                   this.mesh.castShadow = true;
                   this.mesh.receiveShadow = true;
                   this.mesh.position.set(this.x, this.y, this.z);
@@ -82,6 +98,7 @@ export class MeshObject {
             });
 
             this.mesh = new Mesh(geometry, material);
+            this.mesh.name = this.name;
             this.mesh.castShadow = true;
             this.mesh.receiveShadow = true;
             this.mesh.position.set(this.x, this.y, this.z);

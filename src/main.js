@@ -271,6 +271,25 @@ function setMode(mode) {
     }
 }
 
+// Raycasting
+const mouse = new THREE.Vector2();  // 0, 0
+const raycaster = new THREE.Raycaster();
+function checkIntersects() {
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(scene.children);
+    for(const item of intersects) {
+        console.log(item.object.name);
+        if(item.object.name === 'lamp') {
+            //
+            break;
+        } else if(item.object.name === 'roboticVaccum') {
+            //
+            break;
+        }
+    }
+}
+
 // Draw
 const clock = new THREE.Clock();
 let delta;
@@ -309,6 +328,13 @@ window.addEventListener('resize', setLayout);
 
 document.addEventListener('click', () => {
     canvas.requestPointerLock();
+});
+
+
+canvas.addEventListener('click', event => {
+   mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
+   mouse.y = event.clientY / canvas.clientHeight * 2 -1;
+   checkIntersects();
 });
 
 document.addEventListener('pointerlockchange', () => {
