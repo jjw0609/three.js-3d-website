@@ -146,6 +146,7 @@ const lamp = new MeshObject({
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
     cannonShape: new CANNON.Cylinder(0.25, 0.25, 1.8, 32),
+    geometry: new THREE.CylinderGeometry(0.25, 0.25, 1.81, 32),
     mass: 10,
     loader: gltfLoader,
     name: 'lamp',
@@ -161,6 +162,7 @@ const roboticVaccum = new MeshObject({
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
     cannonShape: new CANNON.Cylinder(0.25, 0.3, 1.8, 32),
+    geometry: new THREE.CylinderGeometry(0.25, 0.25, 0.11, 32),
     mass: 10,
     loader: gltfLoader,
     name: 'roboticVaccum',
@@ -193,7 +195,7 @@ const player = new Player({
     cannonWorld,
     cannonMaterial: playerCannonMaterial,
     mass: 50,
-    z: 1.5
+    z: 2.5
 });
 
 cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
@@ -305,6 +307,11 @@ function draw() {
         if(object.cannonBody) {
             object.mesh.position.copy(object.cannonBody.position);
             object.mesh.quaternion.copy(object.cannonBody.quaternion);
+
+            if(object.transparentMesh) {
+                object.transparentMesh.position.copy(object.cannonBody.position);
+                object.transparentMesh.quaternion.copy(object.cannonBody.quaternion);
+            }
         }
     }
 
@@ -332,9 +339,14 @@ document.addEventListener('click', () => {
 
 
 canvas.addEventListener('click', event => {
-   mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
-   mouse.y = event.clientY / canvas.clientHeight * 2 -1;
-   checkIntersects();
+   // mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
+   // mouse.y = event.clientY / canvas.clientHeight * 2 -1;
+   // checkIntersects();
+    mouse.x = 0;
+    mouse.y = 0;
+    if(document.body.dataset.mode === 'game') {
+        checkIntersects();
+    }
 });
 
 document.addEventListener('pointerlockchange', () => {
