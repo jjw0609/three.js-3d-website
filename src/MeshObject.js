@@ -59,6 +59,8 @@ export class MeshObject {
                     info.scene.add(this.transparentMesh);
 
                     this.setCannonBody();
+
+                    if(info.callback) info.callback();
                 },
                 xhr => {
                     // console.log('loading ... ');
@@ -142,5 +144,19 @@ export class MeshObject {
         this.cannonBody.quaternion = combineQuat;
 
         this.cannonWorld.addBody(this.cannonBody);
+    }
+}
+
+export class Lamp extends MeshObject {
+    constructor(info) {
+        super(info);
+    }
+
+    togglePower() {
+        if(this.light.intensity === 0) {
+            this.light.intensity = 7;
+        } else {
+            this.light.intensity = 0;
+        }
     }
 }
