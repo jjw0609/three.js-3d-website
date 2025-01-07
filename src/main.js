@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MeshObject, Lamp } from './MeshObject.js';
+import { MeshObject, Lamp, RoboticVaccum } from './MeshObject.js';
 import { KeyController } from './KeyController.js';
 import { Player } from './Player.js';
 import * as CANNON from 'cannon-es';
@@ -166,11 +166,11 @@ const lamp = new Lamp({
     }
 });
 
-const roboticVaccum = new MeshObject({
+const roboticVaccum = new RoboticVaccum({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
-    cannonShape: new CANNON.Cylinder(0.25, 0.3, 1.8, 32),
+    cannonShape: new CANNON.Cylinder(0.25, 0.25, 0.1, 32),
     geometry: new THREE.CylinderGeometry(0.25, 0.25, 0.11, 32),
     mass: 10,
     loader: gltfLoader,
@@ -296,7 +296,7 @@ function checkIntersects() {
             break;
 
         } else if(item.object.name === 'roboticVaccum') {
-            //
+            roboticVaccum.togglePower();
             break;
         }
     }
@@ -334,6 +334,8 @@ function draw() {
     }
 
     moveCamera();
+    roboticVaccum.move();
+
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
 }
