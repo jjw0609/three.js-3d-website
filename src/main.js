@@ -91,7 +91,6 @@ const ground = new MeshObject({
     differenceY: '0'
 });
 
-
 const floor = new MeshObject({
     scene,
     cannonWorld,
@@ -138,23 +137,23 @@ const desk = new MeshObject({
     depth: 0.75,
     x: 1.2,
     z: -1.9,
-    modelSrc: './models/desk.glb'
+    modelSrc: '/models/desk.glb'
 });
 
 const lamp = new Lamp({
     scene,
     cannonWorld,
     cannonMaterial: defaultCannonMaterial,
-    cannonShape: new CANNON.Cylinder(0.25, 0.25, 1.8, 32),
+    cannonShape: new CANNON.Cylinder(0.25, 0.3, 1.8, 32),
     geometry: new THREE.CylinderGeometry(0.25, 0.25, 1.81, 32),
     mass: 10,
     loader: gltfLoader,
     name: 'lamp',
     width: 0.5,
     height: 1.8,
-    depth: 0|.5,
+    depth: 0.5,
     z: -1.7,
-    modelSrc: './models/lamp.glb',
+    modelSrc: '/models/lamp.glb',
     callback: () => {
         const lampLight = new THREE.PointLight('#eac6ab', 0, 50);
         lampLight.castShadow = true;
@@ -179,7 +178,7 @@ const roboticVaccum = new RoboticVaccum({
     height: 0.1,
     depth: 0.5,
     x: -1,
-    modelSrc: './models/vaccum.glb'
+    modelSrc: '/models/vaccum.glb'
 });
 
 const magazine = new MeshObject({
@@ -188,7 +187,7 @@ const magazine = new MeshObject({
     cannonMaterial: defaultCannonMaterial,
     mass: 0.5,
     loader: textureLoader,
-    name: 'magazie',
+    name: 'magazine',
     width: 0.2,
     height: 0.02,
     depth: 0.29,
@@ -196,15 +195,15 @@ const magazine = new MeshObject({
     y: 1.32,
     z: -2.2,
     rotationX: THREE.MathUtils.degToRad(52),
-    mapSrc: './models/magazine.jpg'
-})
+    mapSrc: '/models/magazine.jpg'
+});
 
 const player = new Player({
     scene,
     cannonWorld,
     cannonMaterial: playerCannonMaterial,
     mass: 50,
-    z: 2.5
+    z: 1.5
 });
 
 cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
@@ -363,18 +362,27 @@ draw();
 window.addEventListener('resize', setLayout);
 
 document.addEventListener('click', () => {
+    if(device === 'mobile') return;
+
     canvas.requestPointerLock();
 });
 
 
 canvas.addEventListener('click', event => {
-   // mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
-   // mouse.y = event.clientY / canvas.clientHeight * 2 -1;
-   // checkIntersects();
-    mouse.x = 0;
-    mouse.y = 0;
-    if(document.body.dataset.mode === 'game') {
+    if(device === 'mobile') {
+        // mobile
+        mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
+        mouse.y = event.clientY / canvas.clientHeight * 2 -1;
         checkIntersects();
+
+    } else {
+        // desktop
+        mouse.x = 0;
+        mouse.y = 0;
+        if(document.body.dataset.mode === 'game') {
+            checkIntersects();
+        }
+
     }
 });
 
