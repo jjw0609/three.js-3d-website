@@ -209,6 +209,21 @@ const player = new Player({
 
 cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magazine);
 
+let device;
+function setDevice() {
+    const htmlElem = document.querySelector('html');
+
+    if('ontouchstart' in document.documentElement && window.innerWidth < 1300) {
+        device = 'mobile';
+        htmlElem.classList.add('touchevents');
+
+    } else {
+        device = 'desktop';
+        htmlElem.classList.add('no-touchevents');
+
+    }
+}
+
 function setLayout() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -340,6 +355,8 @@ function draw() {
     renderer.setAnimationLoop(draw);
 }
 
+setDevice();
+setMode('website');
 draw();
 
 // Events
