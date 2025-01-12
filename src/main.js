@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject, Lamp, RoboticVaccum } from './MeshObject.js';
 import { KeyController } from './KeyController.js';
+import { TouchController } from './TouchController.js';
 import { Player } from './Player.js';
 import * as CANNON from 'cannon-es';
 
@@ -39,6 +40,7 @@ scene.add(camera);
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
 const keyController = new KeyController();
+const touchController = new TouchController();
 
 
 // Light
@@ -392,4 +394,54 @@ document.addEventListener('pointerlockchange', () => {
     } else {
         setMode('website');
     }
-})
+});
+
+// Touch Control
+const touchX = [];
+const touchY = [];
+window.addEventListener('touchstart', event => {
+   if(event.target === touchController.elem) return;
+
+   movementX = 0;
+   movementY = 0;
+
+   touchX[0] = event.targetTouches[0].clientX;
+   touchX[1] = event.targetTouches[0].clientX;
+   touchY[0] = event.targetTouches[0].clientY;
+   touchY[1] = event.targetTouches[0].clientY;
+});
+
+window.addEventListener('touchmove', event => {
+   if(event.target === touchController.elem) return;
+
+   movementX = 0;
+   movementY = 0;
+
+    touchX[0] = touchX[1];
+    touchX[1] = event.targetTouches[0].clientX;
+    touchY[0] = touchY[1];
+    touchY[1] = event.targetTouches[0].clientY;
+
+    movementX = touchX[1] - touchX[0];
+    movementY = touchY[1] - touchY[0];
+});
+
+window.addEventListener('touchend', event => {
+   if(event.target === touchController.elem) return;
+
+   movementX = 0;
+   movementY = 0;
+
+   touchX[0] = touchX[1] = 0;
+   touchY[0] = touchY[1] = 0;
+});
+
+window.addEventListener('gesturestart', event => {
+    event.preventDefault();
+});
+window.addEventListener('gesturechange', event => {
+    event.preventDefault();
+});
+window.addEventListener('gestureend', event => {
+    event.preventDefault();
+});
