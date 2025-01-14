@@ -266,10 +266,16 @@ const euler = new THREE.Euler(0, 0, 0, 'YXZ');
 const minPolarAngle = 0;
 const maxPolarAngle = Math.PI;  // 100
 function moveCamera() {
+    let factor = delta * 50;
+    if(device === 'mobile') {
+        factor = delta;
+    }
+
+
     // rotation
     euler.setFromQuaternion(camera.quaternion);
-    euler.y -= movementX;
-    euler.x -= movementY;
+    euler.y -= movementX * factor;
+    euler.x -= movementY * factor;
     euler.x = Math.max(Math.PI/2 - maxPolarAngle, Math.min(Math.PI/2 - minPolarAngle, euler.x));
 
     movementX -= movementX * 0.2;
