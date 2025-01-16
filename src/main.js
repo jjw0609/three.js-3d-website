@@ -226,6 +226,12 @@ function setDevice() {
 }
 
 function setLayout() {
+    setDevice();
+
+    if(device === 'mobile') {
+        touchController.setPosition();
+    }
+
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -253,6 +259,12 @@ function move() {
     }
 }
 
+function moveMobile() {
+    if(!touchController.walkTouch) return;
+
+    console.log('moveMobile!');
+}
+
 let movementX = 0;
 let movementY = 0;
 function updateMovementValue(event) {
@@ -270,7 +282,6 @@ function moveCamera() {
     if(device === 'mobile') {
         factor = delta;
     }
-
 
     // rotation
     euler.setFromQuaternion(camera.quaternion);
@@ -352,7 +363,12 @@ function draw() {
         player.x = player.cannonBody.position.x;
         player.y = player.cannonBody.position.y;
         player.z = player.cannonBody.position.z;
-        move();
+
+        if(device === 'mobile') {
+            moveMobile();
+        } else {
+            move();
+        }
     }
 
     moveCamera();
