@@ -266,9 +266,12 @@ function moveMobile() {
     const cy = touchController.cy;
     const yy = touchController.walkTouch.clientY - cy;
     const xx = touchController.walkTouch.clientX - cx;
-    const angle = Math.atan2(yy, xx);
+    const angle = Math.atan2(-yy, xx);
+    const angle2 = Math.atan2(yy, xx);
 
-    touchController.setAngleOfBar(angle);
+    player.walkMobile(delta * 2, angle);
+
+    touchController.setAngleOfBar(angle2);
 }
 
 let movementX = 0;
