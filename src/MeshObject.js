@@ -1,6 +1,16 @@
-import { Mesh, BoxGeometry, MeshBasicMaterial, MeshLambertMaterial } from 'three';
-import { Vec3, Box, Body, Quaternion } from 'cannon-es';
+import {
+    Mesh,
+    BoxGeometry,
+    MeshLambertMaterial,
+    MeshBasicMaterial
+} from 'three';
 
+import {
+    Vec3,
+    Box,
+    Body,
+    Quaternion
+} from 'cannon-es';
 
 export class MeshObject {
     constructor(info) {
@@ -13,7 +23,7 @@ export class MeshObject {
         this.x = info.x || 0;
         this.y = info.y || this.height / 2 + this.differenceY;
         this.z = info.z || 0;
-        this.x *= 1;
+        this.x *= 1; // this.x = this.x * 1;
         this.y *= 1;
         this.z *= 1;
         this.rotationX = info.rotationX || 0;
@@ -24,19 +34,18 @@ export class MeshObject {
 
         this.mass = info.mass || 0;
         this.cannonWorld = info.cannonWorld;
-        this.cannonMaterial = info.cannonMaterial
+        this.cannonMaterial = info.cannonMaterial;
 
-        if(info.modelSrc) {
+        if (info.modelSrc) {
             // GLB
             info.loader.load(
                 info.modelSrc,
                 glb => {
                     glb.scene.traverse(child => {
-                        if(child.isMesh) {
+                        if (child.isMesh) {
                             child.castShadow = true;
                         }
-                    })
-
+                    });
                     // console.log('loaded');
                     this.mesh = glb.scene;
                     this.mesh.name = this.name;
@@ -47,12 +56,12 @@ export class MeshObject {
                     // Transparent Mesh for Raycasting
                     const geometry = info.geometry || new BoxGeometry(this.width, this.height, this.depth);
                     this.transparentMesh = new Mesh(
-                      geometry,
-                      new MeshBasicMaterial({
-                          color: 'green',
-                          transparent: true,
-                          opacity: 0
-                      })
+                        geometry,
+                        new MeshBasicMaterial({
+                            color: 'green',
+                            transparent: true,
+                            opacity: 0
+                        })
                     );
                     this.transparentMesh.name = this.name;
                     this.transparentMesh.position.set(this.x, this.y, this.z);
@@ -60,52 +69,46 @@ export class MeshObject {
 
                     this.setCannonBody();
 
-                    if(info.callback) info.callback();
+                    if (info.callback) info.callback();
                 },
                 xhr => {
-                    // console.log('loading ... ');
+                    // console.log('loading...');
                 },
                 error => {
                     // console.log('error');
                 }
             );
-
         } else if (info.mapSrc) {
             const geometry = new BoxGeometry(this.width, this.height, this.depth);
             info.loader.load(
-              info.mapSrc,
-              texture => {
-                  const material = new MeshLambertMaterial({
-                     map: texture
-                  });
+                info.mapSrc,
+                texture => {
+                    const material = new MeshLambertMaterial({
+                        map: texture
+                    });
+                    this.mesh = new Mesh(geometry, material);
+                    this.mesh.name = this.name;
+                    this.mesh.castShadow = true;
+                    this.mesh.receiveShadow = true;
+                    this.mesh.position.set(this.x, this.y, this.z);
+                    this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
+                    info.scene.add(this.mesh);
 
-                  this.mesh = new Mesh(geometry, material);
-                  this.mesh.name = this.name;
-                  this.mesh.castShadow = true;
-                  this.mesh.receiveShadow = true;
-                  this.mesh.position.set(this.x, this.y, this.z);
-                  this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
-
-                  info.scene.add(this.mesh);
-
-                  this.setCannonBody();
-              }
+                    this.setCannonBody();
+                }
             );
-
         } else {
             // Primitives
             const geometry = new BoxGeometry(this.width, this.height, this.depth);
             const material = new MeshLambertMaterial({
                 color: this.color
             });
-
             this.mesh = new Mesh(geometry, material);
             this.mesh.name = this.name;
             this.mesh.castShadow = true;
             this.mesh.receiveShadow = true;
             this.mesh.position.set(this.x, this.y, this.z);
             this.mesh.rotation.set(this.rotationX, this.rotationY, this.rotationZ);
-
             info.scene.add(this.mesh);
 
             this.setCannonBody();
@@ -121,8 +124,8 @@ export class MeshObject {
         });
 
         // this.cannonBody.quaternion.setFromAxisAngle(
-        //     new Vec3(0, 1, 0),    // y
-        //     this.rotationY
+        // 	new Vec3(0, 1, 0), // y
+        // 	this.rotationY
         // );
 
         // rotation: x
@@ -140,8 +143,8 @@ export class MeshObject {
         const axisZ = new Vec3(0, 0, 1);
         quatZ.setFromAxisAngle(axisZ, this.rotationZ);
 
-        const combineQuat = quatX.mult(quatY).mult(quatZ);
-        this.cannonBody.quaternion = combineQuat;
+        const combinedQuat = quatX.mult(quatY).mult(quatZ);
+        this.cannonBody.quaternion = combinedQuat;
 
         this.cannonWorld.addBody(this.cannonBody);
     }
@@ -153,7 +156,7 @@ export class Lamp extends MeshObject {
     }
 
     togglePower() {
-        if(this.light.intensity === 0) {
+        if (this.light.intensity === 0) {
             this.light.intensity = 7;
         } else {
             this.light.intensity = 0;
@@ -176,9 +179,9 @@ export class RoboticVaccum extends MeshObject {
     }
 
     move() {
-        if(this.powerOn) {
+        if (this.powerOn) {
             this.cannonBody.position.x = this.originX + Math.cos(this.angle) * this.r;
-            this.cannonBody.position.z = this.originZ + Math.cos(this.angle) * this.r;
+            this.cannonBody.position.z = this.originZ + Math.sin(this.angle) * this.r;
             this.angle += 0.003;
             this.r = Math.sin(this.angle * 2);
         }

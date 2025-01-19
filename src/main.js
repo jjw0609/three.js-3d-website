@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-// import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshObject, Lamp, RoboticVaccum } from './MeshObject.js';
 import { KeyController } from './KeyController.js';
@@ -14,34 +14,29 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2: 1);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('white')
+scene.background = new THREE.Color('white');
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
     60, // fov
     window.innerWidth / window.innerHeight, // aspect
     0.1, // near
-    1000 //far
+    1000 // far
 );
-camera.position.x = -1;
-camera.position.y = 3;
-camera.position.z = 7;
-// camera.position.set(-1, 3, 7);
+camera.position.set(0, 3, 7);
 scene.add(camera);
 
-// Controls
 // const controls = new OrbitControls(camera, renderer.domElement);
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
 const keyController = new KeyController();
 const touchController = new TouchController();
-
 
 // Light
 const ambientLight = new THREE.AmbientLight('white', 1);
@@ -56,14 +51,14 @@ scene.add(ambientLight, pointLight);
 const cannonWorld = new CANNON.World();
 cannonWorld.gravity.set(0, -10, 0);
 
-const defaultCannonMaterial = new CANNON.Material('defulat');
+const defaultCannonMaterial = new CANNON.Material('default');
 const playerCannonMaterial = new CANNON.Material('player');
 const defaultContactMaterial = new CANNON.ContactMaterial(
     defaultCannonMaterial,
     defaultCannonMaterial,
     {
         friction: 1,
-        restituion: 0.2
+        restitution: 0.2
     }
 );
 const playerContactMaterial = new CANNON.ContactMaterial(
@@ -71,7 +66,7 @@ const playerContactMaterial = new CANNON.ContactMaterial(
     defaultCannonMaterial,
     {
         friction: 100,
-        restituion: 0
+        restitution: 0
     }
 );
 cannonWorld.addContactMaterial(playerContactMaterial);
@@ -213,22 +208,18 @@ cannonObjects.push(ground, floor, wall1, wall2, desk, lamp, roboticVaccum, magaz
 let device;
 function setDevice() {
     const htmlElem = document.querySelector('html');
-
-    if('ontouchstart' in document.documentElement && window.innerWidth < 1300) {
+    if ('ontouchstart' in document.documentElement && window.innerWidth < 1300) {
         device = 'mobile';
         htmlElem.classList.add('touchevents');
-
     } else {
         device = 'desktop';
         htmlElem.classList.add('no-touchevents');
-
     }
 }
 
 function setLayout() {
     setDevice();
-
-    if(device === 'mobile') {
+    if (device === 'mobile') {
         touchController.setPosition();
     }
 
@@ -238,29 +229,26 @@ function setLayout() {
 }
 
 function move() {
-    if(keyController.keys['KeyW'] || keyController.keys['ArrowUp']) {
+    if (keyController.keys['KeyW'] || keyController.keys['ArrowUp']) {
         // forward
         player.walk(-0.05, 'forward');
     }
-
-    if(keyController.keys['KeyS'] || keyController.keys['ArrowDown']) {
+    if (keyController.keys['KeyS'] || keyController.keys['ArrowDown']) {
         // backward
         player.walk(0.05, 'backward');
     }
-
-    if(keyController.keys['KeyA'] || keyController.keys['ArrowLeft']) {
+    if (keyController.keys['KeyA'] || keyController.keys['ArrowLeft']) {
         // left
         player.walk(0.05, 'left');
     }
-
-    if(keyController.keys['KeyD'] || keyController.keys['ArrowRight']) {
+    if (keyController.keys['KeyD'] || keyController.keys['ArrowRight']) {
         // right
         player.walk(0.05, 'right');
     }
 }
 
 function moveMobile() {
-    if(!touchController.walkTouch) return;
+    if (!touchController.walkTouch) return;
 
     const cx = touchController.cx;
     const cy = touchController.cy;
@@ -269,7 +257,7 @@ function moveMobile() {
     const angle = Math.atan2(-yy, xx);
     const angle2 = Math.atan2(yy, xx);
 
-    player.walkMobile(delta * 2, angle);
+    player.walkMobile(delta, angle);
 
     touchController.setAngleOfBar(angle2);
 }
@@ -285,11 +273,11 @@ function updateMovementValue(event) {
 
 const euler = new THREE.Euler(0, 0, 0, 'YXZ');
 const minPolarAngle = 0;
-const maxPolarAngle = Math.PI;  // 100
+const maxPolarAngle = Math.PI; // 180
 function moveCamera() {
     let factor = delta * 50;
-    if(device === 'mobile') {
-        factor = delta;
+    if (device === 'mobile') {
+        factor = delta * 0.3;
     }
 
     // rotation
@@ -300,9 +288,8 @@ function moveCamera() {
 
     movementX -= movementX * 0.2;
     movementY -= movementY * 0.2;
-
-    if(Math.abs(movementX) < 0.1) movementX = 0;
-    if(Math.abs(movementY) < 0.1) movementY = 0;
+    if (Math.abs(movementX) < 0.1) movementX = 0;
+    if (Math.abs(movementY) < 0.1) movementY = 0;
 
     camera.quaternion.setFromEuler(euler);
     player.rotationY = euler.y;
@@ -316,28 +303,26 @@ function moveCamera() {
 function setMode(mode) {
     document.body.dataset.mode = mode;
 
-    if(mode === 'game') {
+    if (mode === 'game') {
         document.addEventListener('mousemove', updateMovementValue);
-
-    } else if(mode === 'website') {
+    } else if (mode === 'website') {
         document.removeEventListener('mousemove', updateMovementValue);
     }
 }
 
 // Raycasting
-const mouse = new THREE.Vector2();  // 0, 0
+const mouse = new THREE.Vector2(); // 0, 0
 const raycaster = new THREE.Raycaster();
 function checkIntersects() {
     raycaster.setFromCamera(mouse, camera);
 
     const intersects = raycaster.intersectObjects(scene.children);
-    for(const item of intersects) {
+    for (const item of intersects) {
         console.log(item.object.name);
-        if(item.object.name === 'lamp') {
+        if (item.object.name === 'lamp') {
             lamp.togglePower();
             break;
-
-        } else if(item.object.name === 'roboticVaccum') {
+        } else if (item.object.name === 'roboticVaccum') {
             roboticVaccum.togglePower();
             break;
         }
@@ -348,32 +333,30 @@ function checkIntersects() {
 const clock = new THREE.Clock();
 let delta;
 function draw() {
-
     delta = clock.getDelta();
 
     let cannonStepTime = 1/60;
-    if(delta < 0.01) cannonStepTime = 1/120;
+    if (delta < 0.01) cannonStepTime = 1/120;
     cannonWorld.step(cannonStepTime, delta, 3);
 
-    for(const object of cannonObjects) {
-        if(object.cannonBody) {
+    for (const object of cannonObjects) {
+        if (object.cannonBody) {
             object.mesh.position.copy(object.cannonBody.position);
             object.mesh.quaternion.copy(object.cannonBody.quaternion);
-
-            if(object.transparentMesh) {
+            if (object.transparentMesh) {
                 object.transparentMesh.position.copy(object.cannonBody.position);
                 object.transparentMesh.quaternion.copy(object.cannonBody.quaternion);
             }
         }
     }
 
-    if(player.cannonBody) {
+    if (player.cannonBody) {
         player.mesh.position.copy(player.cannonBody.position);
         player.x = player.cannonBody.position.x;
         player.y = player.cannonBody.position.y;
         player.z = player.cannonBody.position.z;
 
-        if(device === 'mobile') {
+        if (device === 'mobile') {
             moveMobile();
         } else {
             move();
@@ -395,27 +378,23 @@ draw();
 window.addEventListener('resize', setLayout);
 
 document.addEventListener('click', () => {
-    if(device === 'mobile') return;
-
+    if (device === 'mobile') return;
     canvas.requestPointerLock();
 });
 
-
 canvas.addEventListener('click', event => {
-    if(device === 'mobile') {
+    if (device === 'mobile') {
         // mobile
         mouse.x = event.clientX / canvas.clientWidth * 2 - 1;
-        mouse.y = event.clientY / canvas.clientHeight * 2 -1;
+        mouse.y = -(event.clientY / canvas.clientHeight * 2 - 1);
         checkIntersects();
-
     } else {
         // desktop
         mouse.x = 0;
         mouse.y = 0;
-        if(document.body.dataset.mode === 'game') {
+        if (document.body.dataset.mode === 'game') {
             checkIntersects();
         }
-
     }
 });
 
@@ -427,26 +406,25 @@ document.addEventListener('pointerlockchange', () => {
     }
 });
 
-// Touch Control
+// TouchControl
 const touchX = [];
 const touchY = [];
 window.addEventListener('touchstart', event => {
-   if(event.target === touchController.elem) return;
+    if (event.target === touchController.elem) return;
+    movementX = 0;
+    movementY = 0;
 
-   movementX = 0;
-   movementY = 0;
-
-   touchX[0] = event.targetTouches[0].clientX;
-   touchX[1] = event.targetTouches[0].clientX;
-   touchY[0] = event.targetTouches[0].clientY;
-   touchY[1] = event.targetTouches[0].clientY;
+    touchX[0] = event.targetTouches[0].clientX;
+    touchX[1] = event.targetTouches[0].clientX;
+    touchY[0] = event.targetTouches[0].clientY;
+    touchY[1] = event.targetTouches[0].clientY;
 });
 
 window.addEventListener('touchmove', event => {
-   if(event.target === touchController.elem) return;
+    if (event.target === touchController.elem) return;
 
-   movementX = 0;
-   movementY = 0;
+    movementX = 0;
+    movementY = 0;
 
     touchX[0] = touchX[1];
     touchX[1] = event.targetTouches[0].clientX;
@@ -458,13 +436,12 @@ window.addEventListener('touchmove', event => {
 });
 
 window.addEventListener('touchend', event => {
-   if(event.target === touchController.elem) return;
+    if (event.target === touchController.elem) return;
 
-   movementX = 0;
-   movementY = 0;
-
-   touchX[0] = touchX[1] = 0;
-   touchY[0] = touchY[1] = 0;
+    movementX = 0;
+    movementY = 0;
+    touchX[0] = touchX[1] = 0;
+    touchY[0] = touchY[1] = 0;
 });
 
 window.addEventListener('gesturestart', event => {
